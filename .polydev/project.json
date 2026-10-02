@@ -1,0 +1,13 @@
+{
+  "name": "AID",
+  "templateId": "empty",
+  "agent": {
+    "profile": "light",
+    "planApproval": true,
+    "askUser": true
+  },
+  "devServerCommand": "cp /ruta/al/archivo/AID.zip /sdcard/Download/",
+  "scripts": {
+    "dev": "cp /ruta/al/archivo/AID.zip /sdcard/Download/"
+  }
+}

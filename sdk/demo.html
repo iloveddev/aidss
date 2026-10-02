@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AID SDK Demo</title>
+    <script src="sdk/aid.js"></script>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f7f6; }
+        #aid-verify { width: 300px; height: 200px; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .aid-card { padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .aid-btn { background: #6366f1; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="aid-verify">
+        <p>Verification area</p>
+    </div>
+
+    <script>
+        AID.init({
+            clientId: 'test_app_123',
+            baseUrl: '/api',
+            onSuccess: (res) => alert('Verified! ' + JSON.stringify(res))
+        });
+
+        // Start verification
+        AID.verify({ action: 'login' });
+    </script>
+</body>
+</html>

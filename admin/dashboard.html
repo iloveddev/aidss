@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AID Dashboard | Identity & Defense</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --sidebar-bg: #ffffff;
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-soft: #eef2ff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --card-bg: #ffffff;
+            --card-hover: #f1f5f9;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            min-height: 100vh;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            height: 100vh;
+        }
+        .sidebar-header {
+            padding: 28px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: lineargradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .nav-group {
+            padding: 0 24px;
+            margin-bottom: 24px;
+        }
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0 12px 6px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 10px;
+            margin-bottom: 3px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 0;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: height 0.2s ease;
+        }
+        .nav-item:hover {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+        .nav-item:hover::before {
+            height: 20px;
+        }
+        .nav-item.active {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+        .nav-item.active::before {
+            height: 20px;
+        }
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 14px;
+            flex-shrink: 0;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .top-bar {
+            height: 64px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(8px);
+        }
+        .breadcrumb {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .user-role {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .content {
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .page-header {
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .page-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        .page-header .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        .btn-primary:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            padding: 28px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .stat-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+        .stat-trend {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+
+        /* Tables */
+        .data-table-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th {
+            background: var(--primary-soft);
+            padding: 16px 24px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+        .data-table td {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+        .data-table tbody tr {
+            transition: all 0.2s ease;
+        }
+        .data-table tbody tr:hover {
+            background: var(--card-hover);
+        }
+        .data-table td:first-child {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: capitalize;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+        .badge-info { background: #bfdbfe; color: #1e40af; }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                position: absolute;
+                left: -260px;
+            }
+            .sidebar.open {
+                width: 260px;
+                left: 0;
+                z-index: 100;
+                box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+            }
+            .main {
+                padding-left: 0;
+            }
+            .top-bar {
+                justify-content: space-between;
+            }
+            .breadcrumb {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">A</div>
+            <div class="logo-text">AID</div>
+        </div>
+        
+        <div class="nav-group">
+            <div class="nav-label">Main</div>
+            <a href="#" class="nav-item active">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                Overview
+            </a>
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                Applications
+            </a>
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04M12 21.48l.342-.145A11.952 11.952 0 0012 20.056l-.342.145"></path></svg>
+                Verification
+            </a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-label">Security</div>
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                Policies
+            </a>
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                Risk Analysis
+            </a>
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04M12 21.48l.342-.145A11.952 11.952 0 0012 20.056l-.342.145"></path></svg>
+                AID Shield
+            </a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-label">System</div>
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35"></path></svg>
+                Settings
+            </a>
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Logs
+            </a>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="top-bar">
+            <div class="breadcrumb">Dashboard / Overview</div>
+            <div class="user-profile">
+                <div class="avatar">A</div>
+                <div>
+                    <div class="user-name">Admin User</div>
+                    <div class="user-role">Super Administrator</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h2>Good morning, Admin</h2>
+                    <p class="subtitle">Here's what's happening with your platform today.</p>
+                </div>
+                <button class="btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></svg>
+                    New Application
+                </button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Verifications</div>
+                    <div class="stat-value">12,482</div>
+                    <div class="stat-trend trend-up">↑ 12% from last week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Success Rate</div>
+                    <div class="stat-value">98.7%</div>
+                    <div class="stat-trend trend-up">↑ 0.4% from last week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Challenges Issued</div>
+                    <div class="stat-value">342</div>
+                    <div class="stat-trend trend-down">↓ 5% from last week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">High Risk Events</div>
+                    <div class="stat-value">24</div>
+                    <div class="stat-trend trend-down">↓ 2% from last week</div>
+                </div>
+            </div>
+
+            <div class="page-header" style="margin-top: 48px; margin-bottom: 24px;">
+                <h2 style="font-size: 20px; color: var(--text-main);">Recent Verifications</h2>
+            </div>
+
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Verification ID</th>
+                            <th>Application</th>
+                            <th>Method</th>
+                            <th>Risk</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-family: 'SF Mono', 'Consolas', monospace; color: var(--text-muted);">ver_8f92kLm123</td>
+                            <td>Main Website</td>
+                            <td>AID Native</td>
+                            <td><span class="badge badge-success">Low (12)</span></td>
+                            <td><span class="badge badge-success">Verified</span></td>
+                            <td>2 mins ago</td>
+                        </tr>
+                        <tr>
+                            <td style="font-family: 'SF Mono', 'Consolas', monospace; color: var(--text-muted);">ver_2a45xNp456</td>
+                            <td>Mobile App</td>
+                            <td>QR Code</td>
+                            <td><span class="badge badge-warning">Medium (45)</span></td>
+                            <td><span class="badge badge-warning">Pending</span></td>
+                            <td>15 mins ago</td>
+                        </tr>
+                        <tr>
+                            <td style="font-family: 'SF Mono', 'Consolas', monospace; color: var(--text-muted);">ver_9z11mQp789</td>
+                            <td>Checkout Page</td>
+                            <td>Interactive</td>
+                            <td><span class="badge badge-danger">High (88)</span></td>
+                            <td><span class="badge badge-danger">Failed</span></td>
+                            <td>1 hour ago</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile sidebar toggle
+        const sidebar = document.getElementById('sidebar');
+        const main = document.querySelector('.main');
+        
+        // Add hamburger button for mobile
+        const header = document.querySelector('.top-bar');
+        const hamburger = document.createElement('button');
+        hamburger.className = 'btn-primary';
+        hamburger.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"></svg>';
+        hamburger.style.display = 'none';
+        hamburger.style.gap = '6px';
+        hamburger.style.padding = '8px 12px';
+        hamburger.style.fontSize = '13px';
+        
+        header.querySelector('.breadcrumb').parentElement.insertBefore(hamburger, header.querySelector('.breadcrumb'));
+        
+        hamburger.onclick = () => {
+            sidebar.classList.toggle('open');
+            main.style.marginLeft = sidebar.classList.contains('open') ? '260px' : '0';
+        };
+
+        // Hover effects for table rows with focus states
+        document.querySelectorAll('.data-table tbody tr').forEach(row => {
+            row.setAttribute('role', 'button');
+            row.setAttribute('tabindex', '0');
+            row.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    window.location.href = row.dataset.link || '#';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
